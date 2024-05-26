@@ -1,8 +1,5 @@
 package com.example.workflow.controllers;
 
-import com.example.workflow.DTO.FavourDTO;
-import com.example.workflow.DTO.LocationDTO;
-import com.example.workflow.DTO.SubscriptionDTO;
 import com.example.workflow.models.Location;
 import com.example.workflow.models.Favour;
 import com.example.workflow.models.Subscription;
@@ -12,6 +9,7 @@ import com.example.workflow.services.FavourService;
 import com.example.workflow.services.SubscriptionService;
 import com.example.workflow.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,27 +28,23 @@ public class SubscriptionController {
     private final UserService userService;
 
     @GetMapping("/subscriptions")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String getAllSubscriptions(Principal principal, Model model) {
         User user = userService.getUserByPrincipal(principal);
-        List<SubscriptionDTO> subscriptionDTOs = subscriptionService.getAllSubscriptions().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        model.addAttribute("subscriptions", subscriptionDTOs);
+        List<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
+        model.addAttribute("subscriptions", subscriptions);
         model.addAttribute("user", user);
         return "subscriptions";
     }
 
     @GetMapping("/subscription/create")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String createSubscriptionForm(Principal principal, Model model) {
         User user = userService.getUserByPrincipal(principal);
-        List<LocationDTO> locationDTOs = locationService.getAllLocations().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        List<FavourDTO> favourDTOs = favourService.getAllFavours().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        model.addAttribute("locations", locationDTOs);
-        model.addAttribute("favours", favourDTOs);
+        List<Location> locations = locationService.getAllLocations();
+        List<Favour> favours = favourService.getAllFavours();
+        model.addAttribute("locations", locations);
+        model.addAttribute("favours", favours);
         model.addAttribute("user", user);
         return "subscription-create";
     }
@@ -60,46 +52,35 @@ public class SubscriptionController {
     @PostMapping("/subscription/create")
     public String createSubscription(@RequestParam String name,
                                      @RequestParam Long locationId,
-                                     @RequestParam Set<Long> favourIds,
+                                     @RequestParam Long favourId,
                                      Principal principal) {
         Location location = locationService.getLocationById(locationId);
-        Set<Favour> favours = favourIds.stream()
-                .map(favourService::getFavourById)
-                .collect(Collectors.toSet());
+        Favour favour = favourService.getFavourById(favourId);
 
         Subscription subscription = new Subscription();
         subscription.setName(name);
         subscription.setLocation(location);
-        subscription.setFavours(favours);
+        subscription.setFavour(favour);
         subscriptionService.saveSubscription(subscription);
 
         return "redirect:/subscriptions";
     }
 
-    private SubscriptionDTO convertToDto(Subscription subscription) {
-        SubscriptionDTO subscriptionDTO = new SubscriptionDTO();
-        subscriptionDTO.setId(subscription.getId());
-        subscriptionDTO.setName(subscription.getName());
-        subscriptionDTO.setLocation(convertToDto(subscription.getLocation()));
-        subscriptionDTO.setFavours(subscription.getFavours().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toSet()));
-        return subscriptionDTO;
+    @GetMapping("/favours")
+    public String getAllFavour(Principal principal, Model model) {
+        User user = userService.getUserByPrincipal(principal);
+        List<Favour> favours = favourService.getAllFavours();
+        model.addAttribute("favours", favours);
+        model.addAttribute("user", user);
+        return "favours";
     }
 
-    private LocationDTO convertToDto(Location location) {
-        LocationDTO locationDTO = new LocationDTO();
-        locationDTO.setId(location.getId());
-        locationDTO.setName(location.getName());
-        locationDTO.setPrice(location.getPrice());
-        return locationDTO;
-    }
-
-    private FavourDTO convertToDto(Favour favour) {
-        FavourDTO favourDTO = new FavourDTO();
-        favourDTO.setId(favour.getId());
-        favourDTO.setName(favour.getName());
-        favourDTO.setPrice(favour.getPrice());
-        return favourDTO;
+    @GetMapping("/locations")
+    public String getAllLocation(Principal principal, Model model) {
+        User user = userService.getUserByPrincipal(principal);
+        List<Location> locations = locationService.getAllLocations();
+        model.addAttribute("locations", locations);
+        model.addAttribute("user", user);
+        return "locations";
     }
 }

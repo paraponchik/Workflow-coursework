@@ -3,7 +3,9 @@
 <div class="container">
     <h1 class="mt-4">Create Document</h1>
     <form action="/document/create" method="post" enctype="multipart/form-data">
+
         <input type="hidden" name="_csrf" value="${_csrf.token}">
+
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control" id="title" name="title" required>

@@ -20,4 +20,5 @@ public class SubscriptionService {
     public List<Subscription> getAllSubscriptions() {
         return subscriptionRepo.findAll();
     }
+
 }

@@ -65,4 +65,11 @@ public class UserController {
     public ResponseEntity<List<User>> listUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
+    @GetMapping("/about")
+    public String about(Model model, Principal principal) {
+        User user = userService.getUserByPrincipal(principal);
+        model.addAttribute("user", user);
+        return "about";
+    }
 }

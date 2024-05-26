@@ -22,9 +22,9 @@
 
                     <ul class="dropdown-menu" style="font-size: 20px; background-color: #117018;">
                         <li><a class="dropdown-item" href="/subscriptions">Abonement</a></li>
-                        <li><a class="dropdown-item" href="/places">Place</a></li>
+                        <li><a class="dropdown-item" href="/locations">Place</a></li>
                         <li><a class="dropdown-item" href="/favours">Favour</a></li>
-                        <li><a class="dropdown-item" href="#">About dev</a></li>
+                        <li><a class="dropdown-item" href="/about">About dev</a></li>
                     </ul>
                 </li>
             </ul>

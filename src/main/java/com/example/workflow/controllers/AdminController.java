@@ -63,7 +63,7 @@ public class AdminController {
     public String manageFavours(Principal principal, Model model) {
         model.addAttribute("user", userService.getUserByPrincipal(principal));
         model.addAttribute("favours", favourService.getAllFavours());
-        return "favours";
+        return "favours-admin";
     }
 
     @PostMapping("/admin/favour/create")
@@ -102,7 +102,7 @@ public class AdminController {
     public String managePlaces(Principal principal, Model model) {
         model.addAttribute("user", userService.getUserByPrincipal(principal));
         model.addAttribute("places", locationService.getAllLocations());
-        return "places";
+        return "location-admin";
     }
 
     @PostMapping("/admin/place/create")

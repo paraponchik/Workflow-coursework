@@ -1,5 +1,5 @@
 <#import "parts/default-set.ftlh" as c>
-<@c.page user>
+<@c.page user=user!{}>
     <div class="border border-success-subtle" style="margin: 10% 20% 10% 20%; padding: 5%">
         <h1 style="text-align: center; font-weight: bold">Authorisation</h1>
         <form action="/login" method="post">

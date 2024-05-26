@@ -1,10 +1,7 @@
 package com.example.workflow.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
-
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Data
@@ -13,27 +10,19 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private double totalPrice;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
-    @JsonManagedReference
     private Location location;
 
-    @ManyToMany
-    @JoinTable(
-            name = "subscription_favours",
-            joinColumns = @JoinColumn(name = "subscription_id"),
-            inverseJoinColumns = @JoinColumn(name = "favour_id")
-    )
-    @JsonManagedReference
-    private Set<Favour> favours;
-
-    @Transient
-    private double totalPrice;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "favour_id")
+    private Favour favour;
 
     public double calculateTotalPrice() {
         double total = location != null ? location.getPrice() : 0;
-        for (Favour favour : favours) {
+        if (favour != null) {
             total += favour.getPrice();
         }
         this.totalPrice = total;
