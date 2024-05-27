@@ -25,6 +25,7 @@
                         <li><a class="dropdown-item" href="/locations">Place</a></li>
                         <li><a class="dropdown-item" href="/favours">Favour</a></li>
                         <li><a class="dropdown-item" href="/about">About dev</a></li>
+                        <li><a class="dropdown-item" href="/user/activities">Activity</a></li>
                     </ul>
                 </li>
             </ul>

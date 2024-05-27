@@ -22,6 +22,7 @@ public class UserService {
 
     private final UserRepo userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public boolean createUser(User user) {
         String email = user.getEmail();
@@ -34,6 +35,12 @@ public class UserService {
          user.getRoles().add(Role.ROLE_ADMIN);
          log.info("Saving new user with email {}", email);
          userRepository.save(user);
+
+        // Send email notification
+        String subject = "Registration Successful";
+        String body = "Dear " + user.getName() + ",\n\nThank you for registering at our service.\n\nBest regards,\nYour Company";
+        emailService.sendEmail(user.getEmail(), subject, body);
+
          return true;
     }
 

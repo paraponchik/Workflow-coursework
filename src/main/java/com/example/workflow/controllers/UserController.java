@@ -3,7 +3,9 @@ package com.example.workflow.controllers;
 import com.example.workflow.models.Document;
 import com.example.workflow.models.User;
 import com.example.workflow.repositories.DocumentRepo;
+import com.example.workflow.repositories.UserActivityRepo;
 import com.example.workflow.services.DocumentService;
+import com.example.workflow.services.UserActivityService;
 import com.example.workflow.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ public class UserController {
 
     private final UserService userService;
     private final DocumentService documentService;
+    private final UserActivityService userActivityService;
 
     @GetMapping("/login")
     public String login(Principal principal, Model model){
@@ -58,6 +61,7 @@ public class UserController {
     public String profile(Principal principal, Model model) {
         User user = userService.getUserByPrincipal(principal);
         model.addAttribute("user", user);
+        userActivityService.logActivity(user, "Viewed profile page");
         return "profile";
     }
 
